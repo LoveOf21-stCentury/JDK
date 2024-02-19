@@ -1,28 +1,140 @@
 package seminar1.hw;
 
+import javax.swing.*;
+import javax.xml.transform.sax.SAXResult;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-class ServerWindow {
-    private List<ClientGUI> clients = new ArrayList<>();
-    private List<Message> messageHistory = new ArrayList<>();
-// TODO: 2/17/2024 clear comments
-//    не используется. в другой версии создавался List истории сообщений. после переформировала код,
-//    но этот лист точно понадобится, поэтому оставила
+class ServerWindow extends JFrame {
+    public static final int WIDTH = 400;
+    public static final int HEIGHT = 300;
+    public static final String LOG_PATH = "src/seminar1/hw/log.txt";
+    List<ClientGUI> clients;
 
-    public void addMessage(String sender, String message) {
-        Message newMessage = new Message(sender, message);
-        messageHistory.add(newMessage);
-        sendMessagesToAll(newMessage);
+    JButton btnStart, btnEnd;
+    JTextArea log;
+    boolean work;
+
+    public ServerWindow() {
+        clients = new ArrayList<>();
+
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(WIDTH, HEIGHT);
+        setResizable(false);
+        setTitle("Chat");
+        setLocationRelativeTo(null);
+
+        createPanel();
+        setVisible(true);
     }
 
-    private void sendMessagesToAll(Message message) {
-        for (ClientGUI cl : clients) {
-            cl.receiveMessage(message);
+    public boolean connectUser(ClientGUI client) {
+        if (!work) {
+            return false;
+        }
+        clients.add(client);
+        return true;
+    }
+
+    public String getLogPath() {
+        return readLog();
+    }
+
+    public void disconnectUser(ClientGUI client) {
+        clients.remove(client);
+        if (client != null) {
+            client.disconnectedFromServer();
         }
     }
 
-    public void addClient(ClientGUI client) {
-        clients.add(client);
+    public void message(String message) {
+        if (!work) return;
+        appendLog(message);
+        answerLog(message);
+        saveInLog(message);
+    }
+
+    private void answerLog(String message) {
+        for (ClientGUI cl : clients) {
+            cl.answer(message);
+        }
+    }
+
+    private void saveInLog(String message) {
+        try (FileWriter writer = new FileWriter(LOG_PATH, true)) {
+            writer.write(message);
+            writer.write("\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String readLog() {
+        StringBuilder stringBuilder = new StringBuilder();
+        try (FileReader reader = new FileReader(LOG_PATH)) {
+            int c;
+            while ((c = reader.read()) != -1) {
+                stringBuilder.append((char) c);
+            }
+            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
+            return stringBuilder.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void appendLog(String message) {
+        log.append(message + "\n");
+    }
+
+    private void createPanel() {
+        log = new JTextArea();
+        add(log);
+        add(createButtons(), BorderLayout.SOUTH);
+    }
+
+    private Component createButtons() {
+        JPanel panel = new JPanel(new GridLayout(1, 2));
+        btnStart = new JButton("Start");
+        btnEnd = new JButton("End work");
+
+        btnStart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (work) {
+                    appendLog("Server is already begin");
+                } else {
+                    work = true;
+                    appendLog("Server is just begin");
+                }
+            }
+        });
+
+        btnEnd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!work) {
+                    appendLog("Server is already ended");
+                } else {
+                    work = false;
+                    while (!clients.isEmpty()) {
+                        disconnectUser(clients.get(clients.size() - 1));
+                    }
+                    appendLog("Server just ended");
+                }
+            }
+        });
+
+        panel.add(btnStart);
+        panel.add(btnEnd);
+        return panel;
     }
 }
