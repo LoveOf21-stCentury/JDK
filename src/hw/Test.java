@@ -1,4 +1,7 @@
-package seminar1.hw;
+package hw;
+
+import hw.controller.ClientGUI;
+import hw.server.ServerWindow;
 
 public class Test {
     public static void main(String[] args) {

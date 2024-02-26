@@ -1,4 +1,4 @@
-package hw;
+package hw.server;
 
 import hw.controller.ClientGUI;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-class ServerWindow extends JFrame {
+public class ServerWindow extends JFrame {
     public static final int WIDTH = 400;
     public static final int HEIGHT = 300;
     public static final String LOG_PATH = "src/seminar1/hw/log.txt";
@@ -50,7 +50,7 @@ class ServerWindow extends JFrame {
     public void disconnectUser(ClientGUI client) {
         clients.remove(client);
         if (client != null) {
-            client.disconnectedFromServer();
+            client.disconnectFromServer();
         }
     }
 

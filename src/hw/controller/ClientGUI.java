@@ -1,16 +1,16 @@
-package hw;
+package hw.controller;
+
+import hw.server.ServerWindow;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-class ClientGUI extends JFrame {
+public class ClientGUI extends JFrame implements View {
     public static int WIDTH = 400;
     public static int HEIGHT = 300;
 
-    private ServerWindow server;
-    private boolean connected;
-    private String name;
+    private Controller controller;
 
     JTextArea log;
     JTextField tfIPAddress, tfPort, tfLogin, tfMessage;
@@ -19,59 +19,27 @@ class ClientGUI extends JFrame {
     JPanel headerPanel;
 
     public ClientGUI(ServerWindow server) {
-        this.server = server;
-
-        setSize(WIDTH, HEIGHT);
-        setResizable(false);
-        setTitle("Client's chat");
-        setLocation(server.getX() - 500, server.getY());
+        setting(server);
         createPanel();
         setVisible(true);
     }
 
-    public void answer(String message) {
-        appendLog(message);
+    private void setting(ServerWindow server) {
+        setSize(WIDTH, HEIGHT);
+        setResizable(false);
+        setTitle("Client's chat");
+        setLocation(server.getX() - 500, server.getY());
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        controller = new Controller(this, server.getController());
     }
 
-    public void connectToServer() {
-        if (server.connectUser(this)) {
-            appendLog("Successfully connected\n");
-            headerPanel.setVisible(false);
-            connected = true;
-            name = tfLogin.getText();
-            String log = server.getLogPath();
-            if (log != null) {
-                appendLog(log);
-            }
-        } else {
-            appendLog("Connected broke");
-        }
+    private void hideHeaderPanel(boolean visible) {
+        headerPanel.setVisible(visible);
     }
 
-
-    public void disconnectedFromServer() {
-        if (connected) {
-            headerPanel.setVisible(true);
-            connected = false;
-            server.disconnectUser(this);
-            appendLog("You are disconnected from server");
-        }
-    }
-
-    public void message() {
-        if (connected) {
-            String text = tfMessage.getText();
-            if (!text.equals("")) {
-                server.message(name + ": " + text);
-                tfMessage.setText("");
-            }
-        } else {
-            appendLog("Disconnected");
-        }
-    }
-
-    private void appendLog(String message) {
-        log.append(message + "\n");
+    public void sendMessage() {
+        controller.sendMessage(tfMessage.getText());
+        tfMessage.setText("");
     }
 
     private void createPanel() {
@@ -82,10 +50,10 @@ class ClientGUI extends JFrame {
 
     private Component createHeaderPanel() {
         headerPanel = new JPanel(new GridLayout(2, 3));
-        tfIPAddress = new JTextField("127.0.0.1");
-        tfPort = new JTextField("8189");
-        tfLogin = new JTextField("Mary MaryAnne");
-        password = new JPasswordField("7654321");
+        tfIPAddress = new JTextField("128.0.1.1");
+        tfPort = new JTextField("8029");
+        tfLogin = new JTextField("Mary Smith");
+        password = new JPasswordField("0987654321");
         btnLogin = new JButton("login");
         btnLogin.addActionListener(new ActionListener() {
             @Override
@@ -93,7 +61,6 @@ class ClientGUI extends JFrame {
                 connectToServer();
             }
         });
-
         headerPanel.add(tfIPAddress);
         headerPanel.add(tfPort);
         headerPanel.add(new JPanel());
@@ -117,7 +84,7 @@ class ClientGUI extends JFrame {
             @Override
             public void keyTyped(KeyEvent e) {
                 if (e.getKeyChar() == '\n') {
-                    message();
+                    sendMessage();
                 }
             }
         });
@@ -125,7 +92,7 @@ class ClientGUI extends JFrame {
         btnSend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                message();
+                sendMessage();
             }
         });
         panel.add(tfMessage);
@@ -135,9 +102,26 @@ class ClientGUI extends JFrame {
 
     @Override
     protected void processWindowEvent(WindowEvent e) {
-        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-            disconnectedFromServer();
-        }
         super.processWindowEvent(e);
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            disconnectFromServer();
+        }
+    }
+
+    @Override
+    public void showMessage(String message) {
+        log.append(message);
+    }
+
+    @Override
+    public void connectedToServer() {
+        if (controller.connectToServer(tfLogin.getText()) {
+            hideHeaderPanel(false);
+        }
+    }
+    @Override
+    public void disconnectFromServer() {
+        hideHeaderPanel(true);
+        controller.disconnectFromServer();
     }
 }
