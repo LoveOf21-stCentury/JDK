@@ -1,9 +1,8 @@
-package seminar1.hw;
+package hw;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
 
 class ClientGUI extends JFrame {
     public static int WIDTH = 400;

@@ -1,11 +1,11 @@
-package seminar1.hw;
+package hw;
+
+import hw.controller.ClientGUI;
 
 import javax.swing.*;
-import javax.xml.transform.sax.SAXResult;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
