@@ -45,7 +45,7 @@ public class Test0<T extends Comparable<T>, V extends InputStream & DataInput, K
     }
 
     public static void main(String[] args) {
-        Test0<String, DataInputStream, Integer> test0 = new Test0<>("example", System.in, 10);
+        Test0<String, DataInputStream, Integer> test0 = new Test0<>("example", new DataInputStream(System.in),  10);
         test0.print();
     }
 }
