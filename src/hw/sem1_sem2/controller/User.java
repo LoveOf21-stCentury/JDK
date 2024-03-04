@@ -1,4 +1,4 @@
-package hw.controller;
+package hw.sem1_sem2.controller;
 
 public class User {
     private String name;

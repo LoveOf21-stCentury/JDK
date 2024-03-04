@@ -1,6 +1,6 @@
-//package hw.controller;
+//package hw.sem1.controller;
 //
-//import hw.server.ServerWindow;
+//import hw.sem1.server.ServerWindow;
 //
 //import javax.swing.*;
 //import java.awt.*;

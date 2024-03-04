@@ -1,4 +1,4 @@
-//package hw.controller;
+//package hw.sem1.controller;
 //
 //public class Controller {
 //    private boolean connection;

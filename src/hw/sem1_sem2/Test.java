@@ -1,7 +1,7 @@
 //package hw;
 //
-//import hw.controller.ClientGUI;
-//import hw.server.ServerWindow;
+//import hw.sem1.controller.ClientGUI;
+//import hw.sem1.server.ServerWindow;
 //
 //public class Test {
 //    public static void main(String[] args) {
