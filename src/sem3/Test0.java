@@ -39,7 +39,7 @@ public class Test0<T extends Comparable<T>, V extends InputStream & DataInput, K
     }
 
     public void print() {
-        System.out.printf("t = %s, v = %s, k = %k", valueT.getClass().getSimpleName(),
+        System.out.printf("t = %s, v = %s, k = %s", valueT.getClass().getSimpleName(),
                 valueV.getClass().getSimpleName(),
                 valueK.getClass().getSimpleName());
     }
