@@ -1,4 +1,4 @@
-package hw.sem6;
+package hw.sem6.MontyHall.src.main.java.com.sylman;
 
 import java.util.Random;
 

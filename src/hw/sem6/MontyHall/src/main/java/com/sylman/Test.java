@@ -1,4 +1,6 @@
-package hw.sem6;
+package hw.sem6.MontyHall.src.main.java.com.sylman;
+
+import hw.sem6.MontyHall.src.main.java.com.sylman.GameMonty;
 
 import java.util.HashMap;
 import java.util.Map;
